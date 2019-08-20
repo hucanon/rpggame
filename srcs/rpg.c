@@ -71,14 +71,14 @@ void	ft_rpg(int sauvegarde)
 		}
 		if (a == 2)
 		{
-			ft_putstr("\nYour progression has been saved.\n");
-			return ;;
+			ft_putstr("\nYour progression has been saved.\n\n");
+			return ;
 		}
 		if (a == 3)
 		{
-			ft_putstr("Game successfully quitted.\n");
+			ft_putstr("\nGame successfully quitted.\n\n");
 			return ;
 		}
 	}
-	ft_putstr("Bravo c'est fini :)\n");
+	ft_putstr("\nBravo c'est fini :)\n\n");
 }

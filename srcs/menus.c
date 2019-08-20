@@ -65,19 +65,16 @@ int		menu_std(char choix[50][500], int nb_choix)
 	}
 }
 
-int		menu_maps(char choix[50][500], int nb_choix, int map[20][20], t_perso *list_perso, t_perso *list_enemies)
+int		menu_maps(char choix[50][500], int nb_choix, int map[20][20], t_coord pointer, t_perso *list_perso, t_perso *list_enemies)
 {
-	t_coord		pointer;
 	char		c;
 	int			pos_pointer;
 
-	pointer.x = -1;
-	pointer.y = -1;
 	pos_pointer = 0;
-	print_map00(map, list_perso, pointer, list_enemies);
-	ft_print_menu(pos_pointer, choix, nb_choix);
 	while (1)
 	{
+		print_map00(map, list_perso, pointer, pointer ,list_enemies, -1000);
+		ft_print_menu(pos_pointer, choix, nb_choix);
 		c = '0';
 		system("/bin/stty raw");
 		c = getchar();
@@ -86,17 +83,11 @@ int		menu_maps(char choix[50][500], int nb_choix, int map[20][20], t_perso *list
 		{
 			case 'w':
 				if (pos_pointer > 0)
-				{
-					print_map00(map, list_perso, pointer ,list_enemies);
 					ft_print_menu(--pos_pointer, choix, nb_choix);
-				}
 				break ;
 			case 's':
 				if (pos_pointer < nb_choix - 1)
-				{
-					print_map00(map, list_perso, pointer, list_enemies);
 					ft_print_menu(++pos_pointer, choix, nb_choix);
-				}
 				break ;
 			case ' ':
 				return (pos_pointer);

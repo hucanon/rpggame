@@ -16,6 +16,7 @@ ${NAME}	:	${OBJS}
 			@echo "22/22\n10\n1\n2\n3\n1\n0\n3" > fiche_Uldur.rpg
 			@mv *.rpg data/
 			@echo "\n\nBonne chance\n"
+			@./rpg
 
 all 	:	${NAME}
 

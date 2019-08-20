@@ -94,14 +94,14 @@ t_perso	*ft_map00(t_perso *list_perso, int nb_map)
 			a = -1;
 			while (a < 3)
 			{
-				a = menu_maps(choix_perso, 4, map, list_perso, list_enemies);
+				a = menu_maps(choix_perso, 4, map, pointer, list_perso, list_enemies);
 				if (a == 0)
 				{
 					if (list_perso[map[pointer.y][pointer.x] - 1].nb_mvt > 0)
 						pointer = ft_make_action(map, pointer, list_perso, list_enemies, 1);
 					else
 					{
-						ft_putstr("This character has already moved\n");
+						ft_putstr("This character has already moved.\n");
 						sleep(1);
 					}
 				}
@@ -111,7 +111,7 @@ t_perso	*ft_map00(t_perso *list_perso, int nb_map)
 						pointer = ft_make_action(map, pointer, list_perso, list_enemies, 2);
 					else
 					{
-						ft_putstr("This character has already made an action\n");
+						ft_putstr("This character has already made an action.\n");
 						sleep(1);
 					}
 				}
@@ -119,42 +119,49 @@ t_perso	*ft_map00(t_perso *list_perso, int nb_map)
 				{
 					if (list_perso[map[pointer.y][pointer.x] - 1].nb_potions > 0 && list_perso[map[pointer.y][pointer.x] - 1].nb_atk > 0)
 					{
-						if (menu_maps(choix_verif, 2, map, list_perso, list_enemies) == 0)
+						if (menu_maps(choix_verif, 2, map, pointer, list_perso, list_enemies) == 0)
 						{
 							list_perso[map[pointer.y][pointer.x] - 1].nb_potions--;
 							list_perso[map[pointer.y][pointer.x] - 1].nb_atk--;
 							list_perso[map[pointer.y][pointer.x] - 1].pv = (list_perso[map[pointer.y][pointer.x] - 1].pv + 15 > list_perso[map[pointer.y][pointer.x] - 1].pv_max) ? list_perso[map[pointer.y][pointer.x] - 1].pv_max : list_perso[map[pointer.y][pointer.x] - 1].pv + 15;
+							ft_putstr("\nPotion drunk.\n15 HP restored.\n");
+							sleep(2);
 						}
 					}
 					else if (list_perso[map[pointer.y][pointer.x] - 1].nb_atk == 0)
 					{
-						ft_putstr("This character has already made an action\n");
-						sleep(2);
+						ft_putstr("This character has already made an action.\n");
+						sleep(1);
 					}
 					else
 					{
-						ft_putstr("This character has no potion left\n");
-						sleep(2);
+						ft_putstr("This character has no potion left.\n");
+						sleep(1);
 					}
 				}
 			}
 		}
 		else
 		{
-			b = menu_maps(choix_turn, 3, map, list_perso, list_enemies);
+			b = menu_maps(choix_turn, 3, map, pointer, list_perso, list_enemies);
 			if (b == 1)
 			{
-				b = -1;
-				while (++b < 3)
+				if (menu_maps(choix_verif, 2, map, pointer, list_perso, list_enemies) == 0)
 				{
-					list_perso[b].nb_atk = 1;
-					list_perso[b].nb_mvt = 1;
+					b = -1;
+					while (++b < 3)
+					{
+						list_perso[b].nb_atk = 1;
+						list_perso[b].nb_mvt = 1;
+					}
+					ft_putstr("New turn !");
+					//ft_new_turn(map, )
+					sleep(1);
 				}
-				ft_putstr("New turn !");
-				sleep(1);
 			}
 			else if (b == 2)
-				return (list_perso);
+				if (menu_maps(choix_verif, 2, map, pointer, list_perso, list_enemies) == 0)
+					return (list_perso);
 		}
 	}
 }

@@ -52,13 +52,14 @@ t_perso	*init_tab(int sauvegarde);
 t_perso	ft_struct_cpy(t_perso perso);
 char	**ft_split(char *str, char *charset);
 char	*ft_strdup(char *src);
-int		menu_maps(char choix[50][500], int nb_choix, int map[20][20], t_perso *list_perso, t_perso *list_enemies);
+int		menu_maps(char choix[50][500], int nb_choix, int map[20][20], t_coord pointer, t_perso *list_perso, t_perso *list_enemies);
 int		menu_std(char choix[50][500], int nb_choix);
 void	ft_print_menu(int input, char choix[50][500], int nb_choix);
 void	ft_putchar(char c);
 void	ft_putstr(char *str);
 void	ft_rpg(int sauvegarde);
-void	print_map00(int map[20][20], t_perso *list_perso, t_coord pointer, t_perso *list_enemies);
+void	print_map00_area(int map[20][20], t_perso *list_perso, t_coord pointer, t_perso *list_enemies);
+void	print_map00(int map[20][20], t_perso *list_perso, t_coord sub_pointer, t_coord pointer, t_perso *list_enemies, int range);
 void	print_stats(t_perso *list_perso, int flag);
 
 #endif

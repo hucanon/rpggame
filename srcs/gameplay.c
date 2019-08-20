@@ -6,7 +6,7 @@
 /*   By: hucanon <marvin@le-101.fr>                 +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/08/18 00:07:59 by hucanon      #+#   ##    ##    #+#       */
-/*   Updated: 2019/08/19 23:47:11 by hucanon     ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/19 23:53:24 by hucanon     ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -33,7 +33,7 @@ t_coord ft_navigate(int map[20][20], t_coord pointer, t_perso *list_perso, t_per
 
 	while (1)
 	{
-		print_map00(map, list_perso, pointer, list_enemies);
+		print_map00(map, list_perso, pointer, pointer, list_enemies, -1000);
 		test_navigation(map, pointer, list_perso, list_enemies);
 		usleep(500);
 		c = '0';
@@ -68,6 +68,7 @@ t_coord ft_navigate(int map[20][20], t_coord pointer, t_perso *list_perso, t_per
 t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_perso *list_enemies, int flag)
 {
 	char	c;
+	char	choix_verif[50][500] = { "I am sure", "I changed my mind" };
 	int		range;
 	t_coord	sub_pointer;
 
@@ -77,7 +78,7 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 	range = (flag == 1) ? list_perso[abs(map[pointer.y][pointer.x]) - 1].mvt : list_perso[abs(map[pointer.y][pointer.x]) - 1].portee;
 	while (c != ' ')
 	{
-		print_map00(map, list_perso, pointer, list_enemies);
+		print_map00(map, list_perso, sub_pointer, pointer, list_enemies, range);
 		usleep(500);
 		c = '0';
 		system("/bin/stty raw");
@@ -89,7 +90,7 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 				if (sub_pointer.y > 0 && abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) <= range)
 				{
 					sub_pointer.y--;
-					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range)
+					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range || map[sub_pointer.y][sub_pointer.x] == -10)
 						sub_pointer.y++;
 				}
 				break ;
@@ -97,7 +98,7 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 				if (sub_pointer.y < 19 && abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) <= range)
 				{
 					sub_pointer.y++;
-					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range)
+					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range || map[sub_pointer.y][sub_pointer.x] == -10)
 						sub_pointer.y--;
 				}
 				break ;
@@ -105,7 +106,7 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 				if (sub_pointer.x > 0 && abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) <= range)
 				{
 					sub_pointer.x--;
-					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range)
+					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range || map[sub_pointer.y][sub_pointer.x] == -10)
 						sub_pointer.x++;
 				}
 				break ;
@@ -113,7 +114,7 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 				if (sub_pointer.x < 19 && abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) <= range)
 				{
 					sub_pointer.x++;
-					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range)
+					if (abs(pointer.y - sub_pointer.y) + abs(pointer.x - sub_pointer.x) > range || map[sub_pointer.y][sub_pointer.x] == -10)
 						sub_pointer.x--;
 				}
 				break ;
@@ -123,28 +124,37 @@ t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_
 	{
 		if (map[sub_pointer.y][sub_pointer.x] != 0)
 		{
-			ft_putstr("Impossible move\n");
+			ft_putstr("Unvalid target.");
 			sleep(1);
 		}
 		else
 		{
-			map[sub_pointer.y][sub_pointer.x] = map[pointer.y][pointer.x];
-			map[pointer.y][pointer.x] = 0;
-			list_perso[abs(map[sub_pointer.y][sub_pointer.x]) - 1].nb_mvt--;
+			if (menu_maps(choix_verif, 2, map, sub_pointer, list_perso, list_enemies) == 0)
+			{
+				map[sub_pointer.y][sub_pointer.x] = map[pointer.y][pointer.x];
+				map[pointer.y][pointer.x] = 0;
+				list_perso[abs(map[sub_pointer.y][sub_pointer.x]) - 1].nb_mvt--;
+				return (sub_pointer);
+			}
 		}
 	}
 	else
 	{
 		if (map[sub_pointer.y][sub_pointer.x] < 0 && map[sub_pointer.y][sub_pointer.x] > -10)
 		{
-		list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].pv -= (list_perso[abs(map[pointer.y][pointer.x]) - 1].portee == 1) ? list_perso[abs(map[pointer.y][pointer.x]) - 1].force - list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].def : list_perso[abs(map[pointer.y][pointer.x]) - 1].intelligence - list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].intelligence;
-		list_perso[abs(map[pointer.y][pointer.x]) - 1].nb_atk--;
+			if (menu_maps(choix_verif, 2, map, sub_pointer, list_perso, list_enemies) == 0)
+			{
+				list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].pv -= (list_perso[abs(map[pointer.y][pointer.x]) - 1].portee == 1) ? list_perso[abs(map[pointer.y][pointer.x]) - 1].force - list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].def : list_perso[abs(map[pointer.y][pointer.x]) - 1].intelligence - list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].intelligence;
+				list_perso[abs(map[pointer.y][pointer.x]) - 1].nb_atk--;
+				if (list_enemies[abs(map[sub_pointer.y][sub_pointer.x]) - 1].pv <= 0)
+					map[sub_pointer.y][sub_pointer.x] = 0;
+			}
 		}
 		else
 		{
-			ft_putstr("Unvalid target");
+			ft_putstr("Unvalid target.");
 			sleep(1);
 		}
 	}
-	return (sub_pointer);
+	return (pointer);
 }
