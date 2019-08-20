@@ -100,6 +100,9 @@ void	ft_print_health(int map[20][20], int line, int col, t_perso *list_perso, t_
 void	print_map00(int map[20][20], t_perso *list_perso, t_coord sub_pointer, t_coord pointer, t_perso *list_enemies, int range)
 {
 	t_coord	cell;
+//	int		i;
+//	int		j;
+
 
 	cell.y = -1;
 	ft_putstr("\e[1;1H\e[2J");
@@ -130,4 +133,12 @@ void	print_map00(int map[20][20], t_perso *list_perso, t_coord sub_pointer, t_co
 		ft_putchar('\n');
 	}
 	ft_putstr("   _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______ _______  \n\n");
+/* 	for(i = 0; i < 20; i++)
+	{
+		for(j = 0; j < 20; j++)
+			printf("%d", map[i][j]);
+		printf("\n");
+	}
+	for(i = 0; i < 6; i++)
+		print_stats(list_enemies, i); */
 }

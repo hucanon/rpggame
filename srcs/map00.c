@@ -92,7 +92,7 @@ void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, in
 	int		mvt;
 	char	mappy[20][20];
 
-	n = 0;
+	n = -1;
 	(void)list_perso;
 	while (++n < nb_enemies)
 	{
@@ -108,7 +108,7 @@ void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, in
 				{
 					start.x = -1;
 					while (++start.x < 20)
-						if (map[start.y][start.x] == -n)
+						if (map[start.y][start.x] == -(n + 1))
 							tmp = start;
 				}
 				start = tmp;
@@ -122,11 +122,16 @@ void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, in
 				}
 				end = tmp;
 				tmp = pathfinding(mappy, (start.x + start.y * 20), (end.x + end.y * 20));
+				if (tmp.x == start.x && tmp.y == start.y)
+				{
+					list_perso[0].pv -= (list_enemies[n].portee > 1) ? (list_enemies[n].intelligence - list_perso[0].intelligence) : (list_enemies[n].force - list_perso[0].def);
+					break ;
+				}
 				if (tmp.y != start.y && tmp.x != start.x)
 				{
-					if (mvt > 1 && map[tmp.y][tmp.x] != 1)
+					if (mvt > 1)
 					{
-						map[tmp.y][tmp.x] = -n;
+						map[tmp.y][tmp.x] = -(n + 1);
 						map[start.y][start.x] = 0;
 						mvt -= 2;
 					}
@@ -134,22 +139,22 @@ void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, in
 					{
 						if (tmp.y > start.y && map[start.y + 1][start.x] == 0)
 						{
-							map[start.y + 1][start.x] = -n;
+							map[start.y + 1][start.x] = -(n + 1);
 							map[start.y][start.x] = 0;
 						}
 						else if (tmp.y < start.y && map[start.y - 1][start.x] == 0)
 						{
-							map[start.y - 1][start.x] = -n;
+							map[start.y - 1][start.x] = -(n + 1);
 							map[start.y][start.x] = 0;
 						}
 						else if (tmp.x > start.x && map[start.y][start.x + 1] == 0)
 						{
-							map[start.y][start.x + 1] = -n;
+							map[start.y][start.x + 1] = -(n + 1);
 							map[start.y][start.x] = 0;
 						}
 						else if (tmp.x < start.x && map[start.y][start.x - 1] == 0)
 						{
-							map[start.y][start.x - 1] = -n;
+							map[start.y][start.x - 1] = -(n + 1);
 							map[start.y][start.x] = 0;
 						}
 						mvt--;
@@ -162,12 +167,7 @@ void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, in
 				}
 				else
 				{
-					if (map[tmp.y][tmp.x] == 1)
-					{
-						list_perso[0].pv -= (list_enemies[n].portee > 1) ? (list_enemies[n].intelligence - list_perso[0].intelligence) : (list_enemies[n].force - list_perso[0].def);
-						break ;
-					}
-					map[tmp.y][tmp.x] = -n;
+					map[tmp.y][tmp.x] = -(n + 1);
 					map[start.y][start.x] = 0;
 					mvt--;
 				}
@@ -267,7 +267,7 @@ t_perso	*ft_map00(t_perso *list_perso, int nb_map)
 						list_perso[b].nb_atk = 1;
 						list_perso[b].nb_mvt = 1;
 					}
-					ft_new_turn(map, list_perso, list_enemies, 7);
+					ft_new_turn(map, list_perso, list_enemies, 6);
 					ft_putstr("\nNew turn !\n");
 					sleep(1);
 				}

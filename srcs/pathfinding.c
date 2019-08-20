@@ -174,6 +174,10 @@ t_coord pathfinding(char map[20][20], int start, int end)
 			}
 		}
 	}
+	final.y = stops[path[p_len - 1]].row;
+	final.x = stops[path[p_len - 1]].col;
+	if (p_len == 2)
+		return (final);
 	final.y = stops[path[p_len - 2]].row;
 	final.x = stops[path[p_len - 2]].col;
 	for (i = 0; i < s_len; ++i)
