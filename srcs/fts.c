@@ -33,10 +33,7 @@ int		ft_strlen(char *str)
 
 	i = 0;
 	while (str[i])
-	{
-		ft_putchar('c');
 		i++;
-	}
 	return (i);
 }
 
@@ -135,7 +132,6 @@ t_perso	ft_struct_cpy(t_perso perso)
 	enemy.nb_atk = perso.nb_atk;
 	enemy.nb_mvt = perso.nb_mvt;
 	enemy.nom = ft_strdup(perso.nom);
-	printf(" %s\n", enemy.nom);
 	enemy.stats = ft_split("Name\nHP\nStrength\nSpirit\nMobility\nDefense\nRange\nTalent points\nNumber of potions", "\n");
 	return (enemy);
 }

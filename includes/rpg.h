@@ -19,10 +19,16 @@
 # include <ncurses.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <math.h>
+# include <float.h>
+# include <string.h>
+# include <iso646.h>
+/* add -lm to command line to compile with this header */
 
-# define ABS(nb) nb < 0 ? -nb : nb
+# define map_size_rows 20
+# define map_size_cols 20
 
-typedef struct	s_struct
+typedef	struct	t_struct
 {
 	int		pv;
 	int		pv_max;
@@ -39,14 +45,35 @@ typedef struct	s_struct
 	char	**stats;
 }				t_perso;
 
-typedef struct	s_point
+typedef	struct	s_struct
 {
 	int		x;
 	int		y;
 }				t_coord;
 
+/* description of route between two nodes */
+struct	route
+{
+	/* route has only one direction! */
+	int		x; /* index of stop in array of all stops of src of this route */
+	int		y; /* intex of stop in array of all stops od dst of this route */
+	double	d;
+};
+
+/*graph node struct*/
+struct	stop
+{
+	double	col, row;
+	/* array of indexes of routes from this stop to neighbours in array of all routes */
+	int		*n;
+	int		n_len;
+	double	f, g, h;
+	int		from;
+};
+
 t_coord	ft_make_action(int map[20][20], t_coord pointer, t_perso *list_perso, t_perso *list_enemies, int flag);
 t_coord	ft_navigate(int map[20][20], t_coord pointer, t_perso *list_perso, t_perso *list_enemies);
+t_coord pathfinding(char map[20][20], int start, int end);
 t_perso	*ft_map00(t_perso *list_perso, int nb_map);
 t_perso	*init_tab(int sauvegarde);
 t_perso	ft_struct_cpy(t_perso perso);

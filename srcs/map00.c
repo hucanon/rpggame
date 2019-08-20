@@ -40,10 +40,8 @@ t_perso	*init_map00(int map[20][20], t_perso *list_perso)
 			n = -1;
 			map[i][j] = 0;
 			while (++n < 3)
-			{
 				if (pos_team[n].x == j && pos_team[n].y == i)
 					map[i][j] = n + 1;
-			}
 			if ((i == 5 && j == 12) || (i == 8 && j == 12) || (i == 9 && j == 15))
 			{
 				map[i][j] = -(k + 1);
@@ -64,6 +62,121 @@ t_perso	*init_map00(int map[20][20], t_perso *list_perso)
 		}
 	}
 	return (list_enemies);
+}
+
+void	create_obstacles_map(char mappy[20][20], int map[20][20], int n)
+{
+	int		i;
+	int		j;
+
+	i = -1;
+	while (++i < 20)
+	{
+		j = -1;
+		while (++j < 20)
+		{
+			if (map[i][j] == 0 || map[i][j] == -n || map[i][j] == 1)
+				mappy[i][j] = 0;
+			else
+				mappy[i][j] = 1;
+		}
+	}
+}
+
+void	ft_new_turn(int map[20][20], t_perso *list_perso, t_perso *list_enemies, int nb_enemies)
+{
+	t_coord	end;
+	t_coord	start;
+	t_coord	tmp;
+	int		n;
+	int		mvt;
+	char	mappy[20][20];
+
+	n = 0;
+	(void)list_perso;
+	while (++n < nb_enemies)
+	{
+		if (list_enemies[n].pv > 0)
+		{
+			//ft_find_closest_enemy();
+			mvt = list_enemies[n].mvt;
+			while (mvt > 0)
+			{
+				create_obstacles_map(mappy, map, n);
+				start.y = -1;
+				while (++start.y < 20)
+				{
+					start.x = -1;
+					while (++start.x < 20)
+						if (map[start.y][start.x] == -n)
+							tmp = start;
+				}
+				start = tmp;
+				end.y = -1;
+				while (++end.y < 20)
+				{
+					end.x = -1;
+					while (++end.x < 20)
+						if (map[end.y][end.x] == 1)
+							tmp = end;
+				}
+				end = tmp;
+				tmp = pathfinding(mappy, (start.x + start.y * 20), (end.x + end.y * 20));
+				if (tmp.y != start.y && tmp.x != start.x)
+				{
+					if (mvt > 1 && map[tmp.y][tmp.x] != 1)
+					{
+						map[tmp.y][tmp.x] = -n;
+						map[start.y][start.x] = 0;
+						mvt -= 2;
+					}
+					else
+					{
+						if (tmp.y > start.y && map[start.y + 1][start.x] == 0)
+						{
+							map[start.y + 1][start.x] = -n;
+							map[start.y][start.x] = 0;
+						}
+						else if (tmp.y < start.y && map[start.y - 1][start.x] == 0)
+						{
+							map[start.y - 1][start.x] = -n;
+							map[start.y][start.x] = 0;
+						}
+						else if (tmp.x > start.x && map[start.y][start.x + 1] == 0)
+						{
+							map[start.y][start.x + 1] = -n;
+							map[start.y][start.x] = 0;
+						}
+						else if (tmp.x < start.x && map[start.y][start.x - 1] == 0)
+						{
+							map[start.y][start.x - 1] = -n;
+							map[start.y][start.x] = 0;
+						}
+						mvt--;
+						if (map[tmp.y][tmp.x] == 1)
+						{
+							list_perso[0].pv -= (list_enemies[n].portee > 1) ? (list_enemies[n].intelligence - list_perso[0].intelligence) : (list_enemies[n].force - list_perso[0].def);
+							break ;
+						}
+					}
+				}
+				else
+				{
+					if (map[tmp.y][tmp.x] == 1)
+					{
+						list_perso[0].pv -= (list_enemies[n].portee > 1) ? (list_enemies[n].intelligence - list_perso[0].intelligence) : (list_enemies[n].force - list_perso[0].def);
+						break ;
+					}
+					map[tmp.y][tmp.x] = -n;
+					map[start.y][start.x] = 0;
+					mvt--;
+				}
+				print_map00(map, list_perso, tmp, tmp, list_enemies, -1000);
+				usleep(200000);
+			}
+		}
+	}
+	print_map00(map, list_perso, tmp, tmp, list_enemies, -1000);
 }
 
 t_perso	*ft_map00(t_perso *list_perso, int nb_map)
@@ -154,8 +267,8 @@ t_perso	*ft_map00(t_perso *list_perso, int nb_map)
 						list_perso[b].nb_atk = 1;
 						list_perso[b].nb_mvt = 1;
 					}
-					ft_putstr("New turn !");
-					//ft_new_turn(map, )
+					ft_new_turn(map, list_perso, list_enemies, 7);
+					ft_putstr("\nNew turn !\n");
 					sleep(1);
 				}
 			}
